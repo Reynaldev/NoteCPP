@@ -1,6 +1,6 @@
 #include "frame.h"
 
-Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, title, pos, size)
+Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, wxT("New Document - NoteC++"), pos, size)
 {
     // Panel
     wxPanel* panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, this->GetSize());
@@ -11,7 +11,9 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
     // Menu bar
     // File menu
     wxMenu* menuFile = new wxMenu();
-    menuFile->Append(wxID_OPEN, wxT("Open file...\tCtrl+O"));
+    menuFile->Append(wxID_OPEN, wxT("Open File\tCtrl+O"));
+    menuFile->Append(wxID_SAVE, wxT("Save File\tCtrl+S"));
+    menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT, wxT("Close\tCtrl+E"));
 
     // Menu bar
@@ -20,7 +22,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
     SetMenuBar(menuBar);
 
     // Text control
-    wxTextCtrl* textArea = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, panel->GetSize(), wxTE_MULTILINE);
+    textArea = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, panel->GetSize(), wxTE_MULTILINE);
     textArea->Show(true);
 
     // Add objects into wxBoxSizer
@@ -32,7 +34,24 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
     SetStatusText(wxEmptyString);
 
     // Event
+    Bind(wxEVT_MENU, &Frame::OnSave, this, wxID_SAVE);
     Bind(wxEVT_MENU, &Frame::OnExit, this, wxID_EXIT);
+}
+
+void Frame::OnSave(wxCommandEvent& evt)
+{
+    // Open file dialog
+    wxFileDialog saveFileDialog(this, wxT("Save Document"), "", "",
+        "Text document files (*.txt) |  *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    // Skip if the user click the cancel button
+    if (saveFileDialog.ShowModal() == wxID_CANCEL) return;
+
+    // Save the current contents into the file
+    textArea->SaveFile(saveFileDialog.GetPath());
+
+    // Set program title
+    SetTitle(saveFileDialog.GetFilename() + wxT(" - NoteC++"));
 }
 
 void Frame::OnExit(wxCommandEvent& evt)
