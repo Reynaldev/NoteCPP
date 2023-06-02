@@ -8,7 +8,6 @@ Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, w
     // Box sizer
     wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
 
-    // Menu bar
     // File menu
     wxMenu* menuFile = new wxMenu();
     menuFile->Append(wxID_OPEN, wxT("Open File\tCtrl+O"));

@@ -6,9 +6,6 @@
 class Frame : public wxFrame
 {
 private:
-	wxString filename;
-	wxString text;
-
 	wxTextCtrl* textArea;
 public:
 	Frame(const wxPoint& pos, const wxSize& size);
