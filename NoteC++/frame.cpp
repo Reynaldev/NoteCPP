@@ -34,15 +34,32 @@ Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, w
     SetStatusText(wxEmptyString);
 
     // Event
+    Bind(wxEVT_MENU, &Frame::OnOpen, this, wxID_OPEN);
     Bind(wxEVT_MENU, &Frame::OnSave, this, wxID_SAVE);
     Bind(wxEVT_MENU, &Frame::OnExit, this, wxID_EXIT);
+}
+
+void Frame::OnOpen(wxCommandEvent& evt)
+{
+    // Open file dialog
+    wxFileDialog openFileDialog(this, wxT("Open Document"), "", "",
+        "Text document files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+    // Skip if the user click the cancel button
+    if (openFileDialog.ShowModal() == wxID_CANCEL) return;
+
+    // Load all data into wxTextCtrl from a file
+    textArea->LoadFile(openFileDialog.GetPath());
+
+    // Set program title
+    SetTitle(openFileDialog.GetFilename() + wxT(" - NoteC++"));
 }
 
 void Frame::OnSave(wxCommandEvent& evt)
 {
     // Open file dialog
     wxFileDialog saveFileDialog(this, wxT("Save Document"), "", "",
-        "Text document files (*.txt) |  *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+        "Text document files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     // Skip if the user click the cancel button
     if (saveFileDialog.ShowModal() == wxID_CANCEL) return;
