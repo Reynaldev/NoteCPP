@@ -15,9 +15,14 @@ Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, w
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT, wxT("Close\tCtrl+E"));
 
+    // About
+    wxMenu* menuAbout = new wxMenu();
+    menuAbout->Append(wxID_ABOUT, wxT("About NoteC++"));
+
     // Menu bar
     wxMenuBar* menuBar = new wxMenuBar();
     menuBar->Append(menuFile, wxT("File"));
+    menuBar->Append(menuAbout, wxT("About"));
     SetMenuBar(menuBar);
 
     // Text control
@@ -35,6 +40,7 @@ Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, w
     // Event
     Bind(wxEVT_MENU, &Frame::OnOpen, this, wxID_OPEN);
     Bind(wxEVT_MENU, &Frame::OnSave, this, wxID_SAVE);
+    Bind(wxEVT_MENU, &Frame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &Frame::OnExit, this, wxID_EXIT);
 }
 
@@ -68,6 +74,13 @@ void Frame::OnSave(wxCommandEvent& evt)
 
     // Set program title
     SetTitle(saveFileDialog.GetFilename() + wxT(" - NoteC++"));
+}
+
+void Frame::OnAbout(wxCommandEvent& evt)
+{
+    wxMessageDialog* aboutMsg = new wxMessageDialog(NULL, wxT("This program is made by ReynDev"),
+        wxT("About NoteC++"), wxOK);
+    aboutMsg->ShowModal();
 }
 
 void Frame::OnExit(wxCommandEvent& evt)
