@@ -1,5 +1,7 @@
 #include "frame.h"
 
+wxString GetCurrentChar(wxTextCtrl* tc);
+
 Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, wxT("New Document - NoteC++"), pos, size)
 {
     // Panel
@@ -33,11 +35,15 @@ Frame::Frame(const wxPoint& pos, const wxSize& size) : wxFrame(NULL, wxID_ANY, w
     boxSizer->Add(textArea, 1, wxEXPAND | wxALL);
     panel->SetSizer(boxSizer);
 
-    // Status bar
-    CreateStatusBar();
-    SetStatusText(wxEmptyString);
+    // Custom status bar
+    int statusWidth[] = {-1, 50, 50};
+    CreateStatusBar(3, wxSTB_DEFAULT_STYLE, wxID_ANY, wxT("Custom Status"));
+    SetStatusWidths(3, statusWidth);
+    SetStatusText(wxT("Line: 0"), 1);
+    SetStatusText(wxT("Col: 0"), 2);
 
     // Event
+    // MenuBar events
     Bind(wxEVT_MENU, &Frame::OnOpen, this, wxID_OPEN);
     Bind(wxEVT_MENU, &Frame::OnSave, this, wxID_SAVE);
     Bind(wxEVT_MENU, &Frame::OnAbout, this, wxID_ABOUT);
@@ -86,4 +92,13 @@ void Frame::OnAbout(wxCommandEvent& evt)
 void Frame::OnExit(wxCommandEvent& evt)
 {
 	Close(true);
+}
+
+wxString GetCurrentChar(wxTextCtrl* tc)
+{
+    long pos = tc->GetInsertionPoint();
+    if (pos == tc->GetLastPosition())
+        return wxString();
+
+    return tc->GetRange(pos, pos + 1);
 }
